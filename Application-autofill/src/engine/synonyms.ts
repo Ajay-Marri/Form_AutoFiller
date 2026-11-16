@@ -1,0 +1,308 @@
+/**
+ * Comprehensive Synonym and Field Matching Dictionary
+ * Adheres to FR-08, FR-09, FR-10 of SRS v1.0
+ */
+
+export interface SynonymRule {
+  profileKey: string;
+  label: string;
+  category: 'personal' | 'professional' | 'links' | 'education' | 'experience' | 'questions' | 'resumes';
+  autocompletes: string[];
+  exactNames: string[];
+  regexPatterns: RegExp[];
+  commonSynonyms: string[];
+}
+
+export const SYNONYM_RULES: SynonymRule[] = [
+  {
+    profileKey: 'personal.firstName',
+    label: 'First Name',
+    category: 'personal',
+    autocompletes: ['given-name', 'fname', 'first-name'],
+    exactNames: ['firstname', 'first_name', 'fname', 'givenname', 'given_name', 'candidatefirstname', 'legal_first_name'],
+    regexPatterns: [/first[_\s-]?name/i, /given[_\s-]?name/i, /^fname$/i, /candidate[_\s-]?first[_\s-]?name/i],
+    commonSynonyms: ['first name', 'given name', 'forename', 'candidate first name', 'applicant first name'],
+  },
+  {
+    profileKey: 'personal.middleName',
+    label: 'Middle Name',
+    category: 'personal',
+    autocompletes: ['additional-name', 'middle-name'],
+    exactNames: ['middlename', 'middle_name', 'mname', 'middle_initial'],
+    regexPatterns: [/middle[_\s-]?name/i, /middle[_\s-]?initial/i, /^mname$/i],
+    commonSynonyms: ['middle name', 'middle initial', 'second name'],
+  },
+  {
+    profileKey: 'personal.lastName',
+    label: 'Last Name',
+    category: 'personal',
+    autocompletes: ['family-name', 'lname', 'last-name', 'surname'],
+    exactNames: ['lastname', 'last_name', 'lname', 'familyname', 'family_name', 'surname', 'candidatelastname', 'legal_last_name'],
+    regexPatterns: [/last[_\s-]?name/i, /family[_\s-]?name/i, /^lname$/i, /surname/i, /candidate[_\s-]?last[_\s-]?name/i],
+    commonSynonyms: ['last name', 'family name', 'surname', 'candidate last name', 'applicant last name'],
+  },
+  {
+    profileKey: 'personal.preferredName',
+    label: 'Preferred Name',
+    category: 'personal',
+    autocompletes: ['nickname'],
+    exactNames: ['preferredname', 'preferred_name', 'nickname', 'chosen_name'],
+    regexPatterns: [/preferred[_\s-]?name/i, /nickname/i, /chosen[_\s-]?name/i],
+    commonSynonyms: ['preferred name', 'preferred first name', 'nickname', 'what should we call you'],
+  },
+  {
+    profileKey: 'personal.email',
+    label: 'Email Address',
+    category: 'personal',
+    autocompletes: ['email'],
+    exactNames: ['email', 'email_address', 'e-mail', 'candidate_email', 'contact_email', 'user_email'],
+    regexPatterns: [/e[_\s-]?mail/i, /email[_\s-]?address/i, /candidate[_\s-]?email/i],
+    commonSynonyms: ['email', 'email address', 'e-mail address', 'contact email', 'electronic mail'],
+  },
+  {
+    profileKey: 'personal.phone',
+    label: 'Phone Number',
+    category: 'personal',
+    autocompletes: ['tel', 'tel-national', 'phone'],
+    exactNames: ['phone', 'mobile', 'telephone', 'phone_number', 'mobile_number', 'cell', 'cellphone', 'contact_number'],
+    regexPatterns: [/phone/i, /mobile/i, /cell/i, /telephone/i, /contact[_\s-]?number/i],
+    commonSynonyms: ['phone', 'phone number', 'mobile phone', 'mobile number', 'cell phone', 'primary phone'],
+  },
+  {
+    profileKey: 'personal.address',
+    label: 'Street Address',
+    category: 'personal',
+    autocompletes: ['street-address', 'address-line1'],
+    exactNames: ['address', 'street', 'street_address', 'address1', 'address_line_1', 'residential_address'],
+    regexPatterns: [/street[_\s-]?address/i, /address[_\s-]?line[_\s-]?1/i, /^address$/i],
+    commonSynonyms: ['street address', 'address line 1', 'street', 'mailing address', 'residential address'],
+  },
+  {
+    profileKey: 'personal.city',
+    label: 'City',
+    category: 'personal',
+    autocompletes: ['address-level2'],
+    exactNames: ['city', 'town', 'locality', 'candidate_city'],
+    regexPatterns: [/^city$/i, /town/i, /locality/i],
+    commonSynonyms: ['city', 'town', 'municipality', 'current city'],
+  },
+  {
+    profileKey: 'personal.state',
+    label: 'State / Province',
+    category: 'personal',
+    autocompletes: ['address-level1'],
+    exactNames: ['state', 'province', 'region', 'state_province'],
+    regexPatterns: [/^state$/i, /province/i, /region/i],
+    commonSynonyms: ['state', 'province', 'state/province', 'region'],
+  },
+  {
+    profileKey: 'personal.country',
+    label: 'Country',
+    category: 'personal',
+    autocompletes: ['country', 'country-name'],
+    exactNames: ['country', 'nation', 'nationality', 'candidate_country'],
+    regexPatterns: [/^country$/i, /nationality/i, /nation/i],
+    commonSynonyms: ['country', 'nation', 'country of residence'],
+  },
+  {
+    profileKey: 'personal.postalCode',
+    label: 'Postal / ZIP Code',
+    category: 'personal',
+    autocompletes: ['postal-code'],
+    exactNames: ['zip', 'zipcode', 'zip_code', 'postal', 'postal_code', 'pincode', 'pin_code'],
+    regexPatterns: [/zip[_\s-]?code/i, /postal[_\s-]?code/i, /^zip$/i, /^postal$/i, /pincode/i],
+    commonSynonyms: ['zip', 'zip code', 'postal code', 'pin code', 'post code'],
+  },
+  {
+    profileKey: 'professional.currentTitle',
+    label: 'Current Job Title',
+    category: 'professional',
+    autocompletes: ['organization-title'],
+    exactNames: ['job_title', 'title', 'current_title', 'current_job_title', 'position', 'current_position', 'role'],
+    regexPatterns: [/current[_\s-]?title/i, /job[_\s-]?title/i, /current[_\s-]?position/i, /current[_\s-]?role/i],
+    commonSynonyms: ['current job title', 'job title', 'current title', 'current role', 'present designation'],
+  },
+  {
+    profileKey: 'professional.currentCompany',
+    label: 'Current Company',
+    category: 'professional',
+    autocompletes: ['organization'],
+    exactNames: ['company', 'current_company', 'employer', 'current_employer', 'organization', 'current_organization'],
+    regexPatterns: [/current[_\s-]?company/i, /current[_\s-]?employer/i, /^company$/i, /^employer$/i],
+    commonSynonyms: ['current company', 'current employer', 'present employer', 'company name'],
+  },
+  {
+    profileKey: 'professional.yearsExperience',
+    label: 'Years of Experience',
+    category: 'professional',
+    autocompletes: [],
+    exactNames: ['years_experience', 'years_of_experience', 'total_experience', 'experience_years', 'yoe'],
+    regexPatterns: [/years[_\s-]?(of)?[_\s-]?experience/i, /total[_\s-]?experience/i, /^yoe$/i],
+    commonSynonyms: ['years of experience', 'total years of experience', 'total experience', 'yoe'],
+  },
+  {
+    profileKey: 'professional.noticePeriod',
+    label: 'Notice Period / Availability',
+    category: 'professional',
+    autocompletes: [],
+    exactNames: ['notice_period', 'notice', 'availability', 'earliest_start_date', 'start_date'],
+    regexPatterns: [/notice[_\s-]?period/i, /availability/i, /earliest[_\s-]?start/i],
+    commonSynonyms: ['notice period', 'availability to start', 'when can you start', 'earliest start date'],
+  },
+  {
+    profileKey: 'professional.expectedSalary',
+    label: 'Expected Salary',
+    category: 'professional',
+    autocompletes: [],
+    exactNames: ['expected_salary', 'salary_expectation', 'desired_salary', 'target_salary', 'expected_compensation'],
+    regexPatterns: [/expected[_\s-]?salary/i, /salary[_\s-]?expectation/i, /desired[_\s-]?salary/i, /expected[_\s-]?compensation/i],
+    commonSynonyms: ['expected salary', 'desired salary', 'salary expectation', 'target compensation', 'salary requirement'],
+  },
+  {
+    profileKey: 'professional.currentSalary',
+    label: 'Current Salary',
+    category: 'professional',
+    autocompletes: [],
+    exactNames: ['current_salary', 'current_ctc', 'present_salary', 'base_salary'],
+    regexPatterns: [/current[_\s-]?salary/i, /current[_\s-]?ctc/i, /present[_\s-]?salary/i],
+    commonSynonyms: ['current salary', 'current compensation', 'current ctc', 'present salary'],
+  },
+  {
+    profileKey: 'professional.preferredJobTitle',
+    label: 'Preferred Job Title',
+    category: 'professional',
+    autocompletes: [],
+    exactNames: ['preferred_title', 'desired_role', 'preferred_position'],
+    regexPatterns: [/preferred[_\s-]?title/i, /desired[_\s-]?role/i, /target[_\s-]?role/i],
+    commonSynonyms: ['preferred job title', 'desired position', 'target role'],
+  },
+  {
+    profileKey: 'professional.workAuthorization',
+    label: 'Work Authorization',
+    category: 'professional',
+    autocompletes: [],
+    exactNames: ['work_authorization', 'work_auth', 'authorized_to_work', 'legally_authorized', 'us_work_eligibility'],
+    regexPatterns: [/authorized[_\s-]?to[_\s-]?work/i, /work[_\s-]?authorization/i, /legally[_\s-]?authorized/i, /eligible[_\s-]?to[_\s-]?work/i],
+    commonSynonyms: ['are you legally authorized to work in', 'work authorization', 'authorized to work', 'work permit'],
+  },
+  {
+    profileKey: 'professional.requireSponsorship',
+    label: 'Require Sponsorship',
+    category: 'professional',
+    autocompletes: [],
+    exactNames: ['sponsorship', 'require_sponsorship', 'visa_sponsorship', 'need_sponsorship', 'future_sponsorship'],
+    regexPatterns: [/require[_\s-]?sponsorship/i, /visa[_\s-]?sponsorship/i, /will[_\s-]?(you)?[_\s-]?require[_\s-]?sponsorship/i],
+    commonSynonyms: ['will you now or in the future require visa sponsorship', 'require sponsorship', 'visa sponsorship'],
+  },
+  {
+    profileKey: 'professional.willingToRelocate',
+    label: 'Willing to Relocate',
+    category: 'professional',
+    autocompletes: [],
+    exactNames: ['relocate', 'relocation', 'willing_to_relocate', 'open_to_relocation'],
+    regexPatterns: [/willing[_\s-]?to[_\s-]?relocate/i, /relocation/i, /open[_\s-]?to[_\s-]?relocate/i],
+    commonSynonyms: ['are you willing to relocate', 'relocation willingness', 'open to relocate'],
+  },
+  {
+    profileKey: 'links.linkedinUrl',
+    label: 'LinkedIn Profile URL',
+    category: 'links',
+    autocompletes: ['url'],
+    exactNames: ['linkedin', 'linkedin_url', 'linkedin_profile', 'social_linkedin'],
+    regexPatterns: [/linkedin/i],
+    commonSynonyms: ['linkedin', 'linkedin url', 'linkedin profile', 'linkedin profile link'],
+  },
+  {
+    profileKey: 'links.githubUrl',
+    label: 'GitHub Profile URL',
+    category: 'links',
+    autocompletes: ['url'],
+    exactNames: ['github', 'github_url', 'github_profile', 'social_github'],
+    regexPatterns: [/github/i],
+    commonSynonyms: ['github', 'github url', 'github profile', 'code repository link'],
+  },
+  {
+    profileKey: 'links.portfolioUrl',
+    label: 'Portfolio URL',
+    category: 'links',
+    autocompletes: ['url'],
+    exactNames: ['portfolio', 'portfolio_url', 'portfolio_website', 'personal_portfolio'],
+    regexPatterns: [/portfolio/i],
+    commonSynonyms: ['portfolio', 'portfolio url', 'portfolio website', 'link to your work'],
+  },
+  {
+    profileKey: 'links.personalWebsite',
+    label: 'Personal Website',
+    category: 'links',
+    autocompletes: ['url'],
+    exactNames: ['website', 'personal_website', 'site_url', 'homepage', 'blog'],
+    regexPatterns: [/website/i, /homepage/i, /personal[_\s-]?site/i],
+    commonSynonyms: ['personal website', 'website', 'personal blog', 'homepage'],
+  },
+  {
+    profileKey: 'professional.professionalSummary',
+    label: 'Professional Summary / Bio',
+    category: 'professional',
+    autocompletes: [],
+    exactNames: ['summary', 'professional_summary', 'bio', 'about_me', 'cover_letter', 'notes'],
+    regexPatterns: [/summary/i, /about[_\s-]?me/i, /cover[_\s-]?letter/i, /additional[_\s-]?information/i],
+    commonSynonyms: ['professional summary', 'cover letter', 'summary of qualifications', 'bio', 'about yourself'],
+  },
+  {
+    profileKey: 'education.0.institution',
+    label: 'University / School',
+    category: 'education',
+    autocompletes: [],
+    exactNames: ['school', 'institution', 'university', 'college', 'school_name'],
+    regexPatterns: [/school/i, /university/i, /college/i, /institution/i],
+    commonSynonyms: ['school', 'university', 'college', 'institution name'],
+  },
+  {
+    profileKey: 'education.0.degree',
+    label: 'Degree',
+    category: 'education',
+    autocompletes: [],
+    exactNames: ['degree', 'highest_degree', 'degree_level', 'education_level'],
+    regexPatterns: [/degree/i, /education[_\s-]?level/i],
+    commonSynonyms: ['degree', 'highest degree obtained', 'degree type'],
+  },
+  {
+    profileKey: 'education.0.fieldOfStudy',
+    label: 'Field of Study / Major',
+    category: 'education',
+    autocompletes: [],
+    exactNames: ['major', 'field_of_study', 'discipline', 'department'],
+    regexPatterns: [/field[_\s-]?of[_\s-]?study/i, /major/i, /discipline/i],
+    commonSynonyms: ['field of study', 'major', 'academic discipline', 'specialization'],
+  },
+  {
+    profileKey: 'education.0.gradeGpa',
+    label: 'GPA / Grade',
+    category: 'education',
+    autocompletes: [],
+    exactNames: ['gpa', 'cgpa', 'grade', 'percentage'],
+    regexPatterns: [/gpa/i, /cgpa/i, /grade/i],
+    commonSynonyms: ['gpa', 'cgpa', 'grade point average', 'academic grade'],
+  },
+  {
+    profileKey: 'resumes.default.fileName',
+    label: 'Default Resume (File Name)',
+    category: 'resumes',
+    autocompletes: [],
+    exactNames: ['resume', 'cv', 'resume_file', 'cv_file', 'attachment_resume', 'curriculum_vitae'],
+    regexPatterns: [/resume/i, /\bcv\b/i, /curriculum[_\s-]?vitae/i],
+    commonSynonyms: ['resume', 'curriculum vitae', 'cv', 'attach resume', 'resume file', 'upload resume'],
+  },
+];
+
+/**
+ * Clean and normalize any raw identifier string
+ */
+export function normalizeIdentifier(rawText: string): string {
+  if (!rawText) return '';
+  return rawText
+    .toLowerCase()
+    .replace(/[_\W]+/g, ' ') // replace punctuation and underscores with space
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // camelCase split
+    .trim();
+}

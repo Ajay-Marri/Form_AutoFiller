@@ -1,0 +1,6 @@
+{
+  "name": "JobAutoFill - Chrome Extension & Django Suite",
+  "description": "Local-first Chrome Extension and Django REST Framework suite for intelligent job application autofill with DOM field detection and synthetic event form filling.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

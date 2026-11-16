@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JobAutoFill</title>
+    <style>
+      :root { color-scheme: dark; font: 13px system-ui, sans-serif; background: #0b1020; color: #e2e8f0; }
+      body { width: 360px; margin: 0; padding: 16px; }
+      h1 { margin: 0; font-size: 17px; }
+      p { color: #94a3b8; font-size: 12px; line-height: 1.45; }
+      .status { padding: 10px; margin: 12px 0; border: 1px solid #334155; border-radius: 8px; color: #cbd5e1; }
+      fieldset { border: 1px solid #26334b; border-radius: 8px; margin: 12px 0; padding: 10px; }
+      legend { color: #a5b4fc; padding: 0 5px; font-weight: 600; }
+      label { display: block; margin: 8px 0; color: #cbd5e1; font-size: 11px; }
+      input, textarea { box-sizing: border-box; width: 100%; margin-top: 4px; padding: 7px 8px; color: #f8fafc; background: #111827; border: 1px solid #334155; border-radius: 5px; }
+      textarea { min-height: 55px; resize: vertical; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+      button { width: 100%; padding: 9px; margin-top: 8px; border: 0; border-radius: 6px; background: #4f46e5; color: white; font-weight: 650; cursor: pointer; }
+      button.secondary { background: #1e293b; }
+      button:disabled { opacity: .55; cursor: wait; }
+      .privacy { font-size: 10px; text-align: center; }
+      #notice { min-height: 16px; color: #86efac; }
+      .warn { color: #fbbf24; }
+    </style>
+  </head>
+  <body>
+    <h1>JobAutoFill</h1>
+    <p>Review your profile, scan the current page, then choose when to fill. Nothing is submitted automatically.</p>
+    <div id="status" class="status" role="status">Checking this page…</div>
+    <form id="profile-form">
+      <fieldset>
+        <legend>Personal information</legend>
+        <div class="grid">
+          <label>First name<input name="personal.firstName" autocomplete="given-name"></label>
+          <label>Last name<input name="personal.lastName" autocomplete="family-name"></label>
+          <label>Email<input name="personal.email" type="email" autocomplete="email"></label>
+          <label>Phone<input name="personal.phone" type="tel" autocomplete="tel"></label>
+          <label>Street address<input name="personal.address" autocomplete="street-address"></label>
+          <label>City<input name="personal.city" autocomplete="address-level2"></label>
+          <label>State / province<input name="personal.state" autocomplete="address-level1"></label>
+          <label>Country<input name="personal.country" autocomplete="country-name"></label>
+          <label>Postal / ZIP code<input name="personal.postalCode" autocomplete="postal-code"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Professional information</legend>
+        <div class="grid">
+          <label>Current job title<input name="professional.currentTitle"></label>
+          <label>Current company<input name="professional.currentCompany"></label>
+          <label>Years of experience<input name="professional.yearsExperience"></label>
+          <label>Notice period<input name="professional.noticePeriod"></label>
+          <label>Expected salary<input name="professional.expectedSalary"></label>
+          <label>Work authorization<input name="professional.workAuthorization"></label>
+          <label>Require visa sponsorship? (Yes/No)<input name="professional.requireSponsorship"></label>
+          <label>Willing to relocate? (Yes/No)<input name="professional.willingToRelocate"></label>
+        </div>
+        <label>Professional summary<textarea name="professional.professionalSummary"></textarea></label>
+      </fieldset>
+      <fieldset>
+        <legend>Links</legend>
+        <label>LinkedIn<input name="links.linkedinUrl" type="url"></label>
+        <label>GitHub<input name="links.githubUrl" type="url"></label>
+        <label>Portfolio<input name="links.portfolioUrl" type="url"></label>
+        <label>Personal website<input name="links.personalWebsite" type="url"></label>
+      </fieldset>
+      <button type="submit" class="secondary">Save profile on this device</button>
+      <button id="fill-button" type="button">Scan and fill matching empty fields</button>
+      <p id="notice" role="status"></p>
+    </form>
+    <p class="privacy">Profile stays in this browser’s extension storage. Existing field values are not overwritten.</p>
+    <script src="popup.js"></script>
+  </body>
+</html>
